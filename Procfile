@@ -1,2 +1,1 @@
-worker: python3 bot\ \(1\).py
-
+worker: python3 bot.py
