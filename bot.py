@@ -10,7 +10,7 @@ app = Client(
 
 @app.on_message(filters.command("start"))
 async def start(client, message):
-    await message.reply_text("أهلاً بك في بوت سند يافع! البوت يعمل الآن بنجاح.")
+    await message.reply_text("أهلاً بك في بوت سند يافا! البوت يعمل الآن بنجاح.")
 
 print("سناد يافا يعمل الآن..")
 app.run()
