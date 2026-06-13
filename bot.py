@@ -12,7 +12,7 @@ app = Client(
 # أمر الترحيب المباشر
 @app.on_message(filters.command("start"))
 async def start(client, message):
-    await message.reply_text("أهلاً بك في بوت سند يافع! البوت يعمل الآن بنجاح.")
+    await message.reply_text("أهلاً بك في بوت سناد يافا! البوت يعمل الآن بنجاح.")
 
 print("البوت يعمل الآن..")
 app.run()
