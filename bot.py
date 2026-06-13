@@ -1,6 +1,7 @@
 from pyrogram import Client, filters
 import config
 
+# إنشاء البوت مباشرة بدون أي إضافات مخفية
 app = Client(
     "Sanad_Yafa_Bot",
     api_id=config.API_ID,
@@ -8,9 +9,10 @@ app = Client(
     bot_token=config.BOT_TOKEN
 )
 
+# أمر الترحيب المباشر
 @app.on_message(filters.command("start"))
 async def start(client, message):
     await message.reply_text("أهلاً بك في بوت سند يافع! البوت يعمل الآن بنجاح.")
 
-print("سند يافع يعمل الآن..")
+print("البوت يعمل الآن..")
 app.run()
