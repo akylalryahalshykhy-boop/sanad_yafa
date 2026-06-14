@@ -1,19 +1,38 @@
-# الرد الذكي مع كشف الأخطاء
+from pyrogram import Client, filters
+from groq import Groq
+import config
+
+# إعداد البوت
+app = Client(
+    "Sanad_Yafa_Bot",
+    api_id=config.API_ID,
+    api_hash=config.API_HASH,
+    bot_token=config.BOT_TOKEN
+)
+
+# إعداد محرك الذكاء الاصطناعي
+client_groq = Groq(api_key=config.GROQ_API_KEY)
+
+# أمر البدء
+@app.on_message(filters.command("start"))
+async def start(client, message):
+    await message.reply_text(
+        "✨ **أهلاً بك في عالم يافا الذكي!**\n\n"
+        "أنا هنا لمساعدتك.\n"
+        "💡 **اشترك في قناتنا:** [عالم يافا الرقمي](https://t.me/Yaffa_Digital_World)"
+    )
+
+# الرد الذكي
 @app.on_message(filters.text & ~filters.command(["start"]))
 async def ai_chat(client, message):
     await client.send_chat_action(message.chat.id, "typing")
-    
     try:
-        # إضافة طباعة للتأكد من أن الرسالة وصلت للكود
-        print(f"User message: {message.text}")
-        
-        chat_completion = client_groq.chat.completions.create(
+        response = client_groq.chat.completions.create(
             messages=[{"role": "user", "content": message.text}],
             model="llama3-8b-8192",
         )
-        reply = chat_completion.choices[0].message.content
-        await message.reply_text(reply)
-        
+        await message.reply_text(response.choices[0].message.content)
     except Exception as e:
-        # إذا حدث خطأ، سيرسله البوت لك في المحادثة مباشرة
-        await message.reply_text(f"⚠️ خطأ تقني: {str(e)}")
+        await message.reply_text("عذراً، حدث خطأ في الاتصال، حاول لاحقاً.")
+
+app.run()
