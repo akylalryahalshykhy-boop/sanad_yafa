@@ -1,5 +1,5 @@
 from pyrogram import Client, filters
-from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from groq import Groq
 import config
 
 app = Client(
@@ -9,24 +9,21 @@ app = Client(
     bot_token=config.BOT_TOKEN
 )
 
-# معرف القناة (بدون الرابط، فقط الاسم بعد @)
-CHANNEL_USERNAME = "@Yaffa_Digital_World" 
+client_groq = Groq(api_key=config.GROQ_API_KEY)
 
 @app.on_message(filters.command("start"))
 async def start(client, message):
-    try:
-        # فحص هل المستخدم مشترك في القناة
-        member = await client.get_chat_member(CHANNEL_USERNAME, message.from_user.id)
-        
-        # إذا كان مشتركاً، رحب به
-        await message.reply_text("أهلاً بك في بوت عالم يافا | YAFFA World!\nالبوت يعمل الآن بنجاح.")
-        
-    except:
-        # إذا لم يكن مشتركاً، أرسل زر الاشتراك
-        keyboard = InlineKeyboardMarkup([
-            [InlineKeyboardButton("اشترك في عالم يافا 📢", url="https://t.me/Yaffa_Digital_World")]
-        ])
-        await message.reply_text("عذراً، يجب عليك الاشتراك في قناة عالم يافا لاستخدام البوت:", reply_markup=keyboard)
+    await message.reply_text("✨ **أهلاً بك في عالم يافا الذكي!**\nأنا الآن جاهز للإجابة على أي سؤال.")
 
-print("البوت يعمل الآن مع حماية الاشتراك..")
+@app.on_message(filters.text & ~filters.command(["start"]))
+async def ai_chat(client, message):
+    await client.send_chat_action(message.chat.id, "typing")
+
+    chat_completion = client_groq.chat.completions.create(
+        messages=[{"role": "user", "content": message.text}],
+        model="llama3-8b-8192",
+    )
+
+    await message.reply_text(chat_completion.choices[0].message.content)
+
 app.run()
